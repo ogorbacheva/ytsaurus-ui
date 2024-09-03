@@ -1,11 +1,14 @@
+import {AnyAction} from 'redux';
 import {ThunkAction} from 'redux-thunk';
 import {Toaster} from '@gravity-ui/uikit';
 import type {AxiosError} from 'axios';
 import {YTApiId, ytApiV4Id} from '../../../../rum/rum-wrap-api';
-import {getQueryTrackerRequestOptions} from '../query/selectors';
+import {getCurrentStage, getQueryTrackerRequestOptions} from '../query/selectors';
 import {QUERY_ACO_LOADING} from './constants';
 import {showErrorPopup} from '../../../../utils/utils';
 import {QueryACOActions} from './reducer';
+import {RootState} from '../../../../store/reducers';
+import {setSettingByKey} from '../../../../store/actions/settings';
 
 export const getQueryACO = (): ThunkAction<Promise<unknown>, any, any, QueryACOActions> => {
     return (dispatch, getState) => {
@@ -61,3 +64,17 @@ export const getQueryACO = (): ThunkAction<Promise<unknown>, any, any, QueryACOA
             });
     };
 };
+
+export function setUserDefaultACO(
+    aco: string,
+): ThunkAction<Promise<any>, RootState, any, AnyAction> {
+    return async (dispatch, getState) => {
+        const state = getState();
+        const cluster = state.global.cluster;
+        const stage = getCurrentStage(state);
+
+        await dispatch(
+            setSettingByKey(`qt-stage::${cluster}::queryTracker::${stage}::defaultACO`, aco),
+        );
+    };
+}
