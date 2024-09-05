@@ -127,6 +127,11 @@ export interface YTCoreConfig {
      */
     localmodeClusterConfig?: Partial<Pick<ClusterConfig, 'urls' | 'externalProxy'>>;
 
+    /**
+     * Base url to TabletErrorsManager service
+     */
+    tabletErrorsBaseUrl?: string;
+
     adjustAppConfig?: (nodekit: NodeKit) => void;
 }
 
